@@ -1,8 +1,18 @@
 'use client';
 
-import { Menu, LogOut } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { Menu, LogOut, Globe, Sun, Moon, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 import { useUIStore } from '@/store/ui.store';
 import { useLogout } from '@/features/auth/api/use-mutations';
 
@@ -13,11 +23,13 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({
-  lang: _lang,
+  lang,
   userName,
   logoutLabel,
 }: DashboardHeaderProps) {
-  const { toggleSidebar } = useUIStore();
+  const router = useRouter();
+  const pathname = usePathname();
+  const { toggleSidebar, theme, setTheme } = useUIStore();
   const logoutMutation = useLogout();
 
   const initials = userName
@@ -26,6 +38,24 @@ export function DashboardHeader({
     .join('')
     .toUpperCase()
     .slice(0, 2);
+
+  const switchLanguage = (newLang: 'en' | 'id') => {
+    if (newLang === lang) return;
+    const segments = pathname.split('/');
+    segments[1] = newLang;
+    const newPath = segments.join('/') || `/${newLang}`;
+    router.push(newPath);
+  };
+
+  const toggleTheme = () => {
+    const nextTheme = theme === 'dark' ? 'light' : 'dark';
+    setTheme(nextTheme);
+    if (nextTheme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  };
 
   return (
     <header
@@ -45,18 +75,47 @@ export function DashboardHeader({
         <Menu size={20} aria-hidden="true" />
       </Button>
 
-      {/* Right side */}
-      <div className="flex items-center gap-3">
-        {/* User avatar */}
-        <Avatar aria-label={`Logged in as ${userName}`}>
-          <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+      {/* Right side controls */}
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Language Switcher */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="gap-1.5 uppercase font-medium text-xs"
+              aria-label="Switch language"
+            >
+              <Globe size={15} />
+              <span>{lang}</span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            <DropdownMenuItem onClick={() => switchLanguage('en')}>
+              English {lang === 'en' && '✓'}
+            </DropdownMenuItem>
+            <DropdownMenuItem onClick={() => switchLanguage('id')}>
+              Bahasa Indonesia {lang === 'id' && '✓'}
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
 
-        <span className="hidden text-sm font-medium sm:block">{userName}</span>
+        {/* Theme Toggle */}
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={toggleTheme}
+          aria-label="Toggle color theme"
+          title="Toggle color theme"
+        >
+          {theme === 'dark' ? (
+            <Sun size={18} aria-hidden="true" />
+          ) : (
+            <Moon size={18} aria-hidden="true" />
+          )}
+        </Button>
 
-        {/* Logout button */}
+        {/* Quick Logout Button */}
         <Button
           id="logout-button"
           variant="ghost"
@@ -64,9 +123,51 @@ export function DashboardHeader({
           onClick={() => logoutMutation.mutate()}
           disabled={logoutMutation.isPending}
           aria-label={logoutLabel}
+          title={logoutLabel}
         >
           <LogOut size={18} aria-hidden="true" />
         </Button>
+
+        {/* User Menu */}
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button
+              variant="ghost"
+              className="flex items-center gap-2 p-1.5 rounded-full"
+              aria-label={`User menu for ${userName}`}
+            >
+              <Avatar aria-hidden="true">
+                <AvatarFallback className="bg-primary text-primary-foreground text-xs font-semibold">
+                  {initials}
+                </AvatarFallback>
+              </Avatar>
+              <span className="hidden text-sm font-medium sm:block max-w-30 truncate">
+                {userName}
+              </span>
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuLabel className="truncate">{userName}</DropdownMenuLabel>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem asChild>
+              <Link href={`/${lang}/profile`} className="flex items-center gap-2">
+                <User size={15} />
+                <span>Profile</span>
+              </Link>
+            </DropdownMenuItem>
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              id="logout-button"
+              onClick={() => logoutMutation.mutate()}
+              disabled={logoutMutation.isPending}
+              className="text-destructive flex items-center gap-2 cursor-pointer"
+              aria-label={logoutLabel}
+            >
+              <LogOut size={15} />
+              <span>{logoutLabel}</span>
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
       </div>
     </header>
   );

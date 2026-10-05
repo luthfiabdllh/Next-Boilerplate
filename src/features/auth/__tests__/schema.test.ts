@@ -1,5 +1,11 @@
 import { describe, it, expect } from 'vitest';
-import { loginSchema } from '@/features/auth/types';
+import {
+  loginSchema,
+  registerSchema,
+  forgotPasswordSchema,
+  updateProfileSchema,
+  changePasswordSchema,
+} from '@/features/auth/types';
 
 describe('loginSchema (Zod v4)', () => {
   describe('valid inputs', () => {
@@ -27,7 +33,6 @@ describe('loginSchema (Zod v4)', () => {
         password: 'ValidPass1',
       });
       expect(result.success).toBe(false);
-      // Zod v4: use error.issues instead of error.errors
       expect(result.error?.issues[0].path).toContain('email');
     });
 
@@ -43,7 +48,7 @@ describe('loginSchema (Zod v4)', () => {
     it('rejects a password shorter than 8 characters', () => {
       const result = loginSchema.safeParse({
         email: 'user@example.com',
-        password: '1234567', // 7 chars — below minimum
+        password: '1234567',
       });
       expect(result.success).toBe(false);
       expect(result.error?.issues[0].path).toContain('password');
@@ -98,5 +103,65 @@ describe('loginSchema (Zod v4)', () => {
       );
       expect(passIssue?.message).toBe('Password must be at least 8 characters.');
     });
+  });
+});
+
+describe('registerSchema (Zod v4)', () => {
+  it('accepts valid registration input', () => {
+    const result = registerSchema.safeParse({
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+      password: 'password123',
+      confirmPassword: 'password123',
+    });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects mismatched password and confirmPassword', () => {
+    const result = registerSchema.safeParse({
+      name: 'Jane Doe',
+      email: 'jane@example.com',
+      password: 'password123',
+      confirmPassword: 'differentpassword',
+    });
+    expect(result.success).toBe(false);
+    expect(result.error?.issues[0].path).toContain('confirmPassword');
+  });
+});
+
+describe('forgotPasswordSchema', () => {
+  it('accepts a valid email', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'user@example.com' });
+    expect(result.success).toBe(true);
+  });
+
+  it('rejects invalid email', () => {
+    const result = forgotPasswordSchema.safeParse({ email: 'invalid-email' });
+    expect(result.success).toBe(false);
+  });
+});
+
+describe('profile & password schemas', () => {
+  it('validates updateProfileSchema', () => {
+    expect(updateProfileSchema.safeParse({ name: 'Bob', email: 'bob@example.com' }).success).toBe(true);
+    expect(updateProfileSchema.safeParse({ name: '', email: 'bob@example.com' }).success).toBe(false);
+  });
+
+  it('validates changePasswordSchema', () => {
+    expect(
+      changePasswordSchema.safeParse({
+        currentPassword: 'oldpass123',
+        newPassword: 'newpass123',
+        confirmPassword: 'newpass123',
+      }).success
+    ).toBe(true);
+
+    expect(
+      changePasswordSchema.safeParse({
+        currentPassword: 'oldpass123',
+        newPassword: 'newpass123',
+        confirmPassword: 'mismatchpass',
+      }).success
+    ).toBe(false);
   });
 });

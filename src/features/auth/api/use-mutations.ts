@@ -4,7 +4,16 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { apiClient } from '@/lib/api-client';
 import { authKeys } from './query-keys';
 import { toast } from 'sonner';
-import type { LoginDTO, User, AuthResponse } from '../types';
+import { formatApiError } from '@/lib/api-response';
+import type {
+  LoginDTO,
+  RegisterDTO,
+  ForgotPasswordDTO,
+  UpdateProfileDTO,
+  ChangePasswordDTO,
+  User,
+  AuthResponse,
+} from '../types';
 
 // ─── Login ────────────────────────────────────────────────────────────────
 
@@ -22,12 +31,66 @@ export const useLogin = () => {
     },
     onSuccess: (response) => {
       if (response.success && response.data?.user) {
-        // Populate the cache immediately — no extra round trip needed
         queryClient.setQueryData<User>(authKeys.currentUser(), response.data.user);
       }
     },
     onError: () => {
       // Error display is handled by the form component via mutation state
+    },
+  });
+};
+
+// ─── Register ─────────────────────────────────────────────────────────────
+
+export const useRegister = () => {
+  return useMutation({
+    mutationFn: async (payload: RegisterDTO) => {
+      const { data } = await apiClient.post('/auth/register', payload);
+      return data;
+    },
+  });
+};
+
+// ─── Forgot Password ──────────────────────────────────────────────────────
+
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: async (payload: ForgotPasswordDTO) => {
+      const { data } = await apiClient.post('/auth/forgot-password', payload);
+      return data;
+    },
+  });
+};
+
+// ─── Profile Update ───────────────────────────────────────────────────────
+
+export const useUpdateProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (payload: UpdateProfileDTO): Promise<User> => {
+      const { data } = await apiClient.patch<{ data: User }>('/auth/profile', payload);
+      return data.data;
+    },
+    onSuccess: (updatedUser) => {
+      queryClient.setQueryData<User>(authKeys.currentUser(), updatedUser);
+    },
+    onError: (error) => {
+      toast.error(formatApiError(error));
+    },
+  });
+};
+
+// ─── Change Password ──────────────────────────────────────────────────────
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationFn: async (payload: ChangePasswordDTO) => {
+      const { data } = await apiClient.post('/auth/change-password', payload);
+      return data;
+    },
+    onError: (error) => {
+      toast.error(formatApiError(error));
     },
   });
 };
@@ -46,11 +109,9 @@ export const useLogout = () => {
       await apiClient.post('/auth/logout');
     },
     onSuccess: () => {
-      // Clear all auth-related queries from cache
       queryClient.removeQueries({ queryKey: authKeys.all });
       toast.success('You have been signed out.');
 
-      // Redirect to login
       const lang = document.documentElement.lang ?? 'en';
       window.location.href = `/${lang}/login`;
     },

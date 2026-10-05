@@ -56,40 +56,57 @@ src/
 │   │   ├── page.tsx              # → redirects to /[lang]/dashboard
 │   │   ├── error.tsx             # Error boundary (client)
 │   │   ├── (auth)/
-│   │   │   └── login/page.tsx    # Login page (SSG per locale)
+│   │   │   ├── login/page.tsx           # Login page
+│   │   │   ├── register/page.tsx        # Registration page
+│   │   │   └── forgot-password/page.tsx # Password reset request
 │   │   └── (dashboard)/
-│   │       ├── layout.tsx        # ⚠️ Authoritative JWT check here
-│   │       └── dashboard/page.tsx
+│   │       ├── layout.tsx        # ⚠️ Authoritative JWT check + Shell
+│   │       ├── dashboard/page.tsx# Dashboard metrics
+│   │       ├── users/page.tsx    # Data Table CRUD & RBAC showcase
+│   │       ├── profile/page.tsx  # User Profile & Password settings
+│   │       └── settings/page.tsx # Settings blueprint
 │   └── api/
-│       └── auth/
-│           ├── login/route.ts    # BFF: validates + sets cookie
-│           ├── logout/route.ts   # BFF: clears cookies
-│           └── refresh/route.ts  # BFF: token refresh
+│       ├── auth/
+│       │   ├── login/route.ts           # BFF: validates + sets cookie
+│       │   ├── register/route.ts        # BFF: account registration
+│       │   ├── forgot-password/route.ts # BFF: reset instructions
+│       │   ├── profile/route.ts         # BFF: get/patch profile
+│       │   ├── change-password/route.ts # BFF: update password
+│       │   ├── logout/route.ts          # BFF: clears cookies
+│       │   └── refresh/route.ts         # BFF: token refresh
+│       └── users/
+│           ├── route.ts                 # BFF: search, filter, paginate, create
+│           └── [id]/route.ts            # BFF: get, patch, delete user
 ├── components/
-│   ├── ui/                       # shadcn/ui primitives (do not edit)
+│   ├── ui/                       # shadcn/ui primitives (dialog, table, select, etc.)
+│   ├── shared/                   # Reusable cross-feature utilities
+│   │   ├── confirm-dialog.tsx    # Generic destructive/action confirmation
+│   │   └── role-guard.tsx        # <Can> and <RoleGuard> authorization components
 │   └── layouts/                  # App shell components
-│       ├── dashboard-header.tsx
-│       └── dashboard-sidebar.tsx
+│       ├── dashboard-header.tsx  # Header with Lang switcher, Theme toggle, User menu
+│       └── dashboard-sidebar.tsx # Sidebar with RBAC-guarded links
 ├── features/
-│   └── auth/                     # Auth feature domain (example)
-│       ├── api/
-│       │   ├── query-keys.ts     # Centralized cache keys
-│       │   ├── server-fetch.ts   # Server-only fetchers
-│       │   ├── use-queries.ts    # TanStack Query hooks
-│       │   └── use-mutations.ts  # TanStack Mutation hooks
-│       ├── components/
-│       │   └── login-form.tsx    # Client form component
-│       ├── hooks/
-│       └── types/index.ts        # Zod schemas + TypeScript types
+│   ├── auth/                     # Auth feature domain
+│   │   ├── api/                  # Query keys, mutations, queries
+│   │   ├── components/           # Login, Register, Forgot Password, Profile forms
+│   │   └── types/index.ts        # Zod v4 schemas + TypeScript types
+│   └── users/                    # Users CRUD & Data Table showcase
+│       ├── api/                  # Query keys, useUsers, useCreateUser, etc.
+│       ├── components/           # UserTable, UserFormDialog
+│       └── types/index.ts        # Zod schemas + User entity types
 ├── lib/
 │   ├── api-client.ts             # Axios instance + refresh interceptor
+│   ├── api-response.ts           # Standard API response & error formatters
 │   ├── get-query-client.ts       # Singleton QueryClient (React cache)
 │   ├── i18n.ts                   # Dictionary loader + locale helpers
+│   ├── rbac.ts                   # Role & Permission definitions + matrix
 │   ├── verify-session.ts         # jose JWT verification (server-only)
 │   ├── utils.ts                  # cn(), formatDate(), etc.
 │   └── dictionaries/
 │       ├── en.ts                 # English translations
 │       └── id.ts                 # Indonesian translations
+├── hooks/
+│   └── use-permissions.ts        # Authorization hook for Client Components
 ├── providers/
 │   └── query-provider.tsx        # TanStack Query provider
 ├── store/

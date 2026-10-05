@@ -2,25 +2,36 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, User, Settings } from 'lucide-react';
+import { LayoutDashboard, Users, User, Settings } from 'lucide-react';
 import { useUIStore } from '@/store/ui.store';
+import { usePermissions } from '@/hooks/use-permissions';
 import { cn } from '@/lib/utils';
 import type { Dictionary } from '@/lib/dictionaries/en';
+import type { Role } from '@/lib/rbac';
 
 interface DashboardSidebarProps {
   lang: string;
   dict: Dictionary['dashboard']['navigation'];
 }
 
-const navItems = [
-  { key: 'dashboard' as const, icon: LayoutDashboard, href: 'dashboard' },
-  { key: 'profile' as const, icon: User, href: 'profile' },
-  { key: 'settings' as const, icon: Settings, href: 'settings' },
+interface NavItem {
+  key: keyof Dictionary['dashboard']['navigation'];
+  icon: typeof LayoutDashboard;
+  href: string;
+  roles?: readonly Role[];
+}
+
+const navItems: NavItem[] = [
+  { key: 'dashboard', icon: LayoutDashboard, href: 'dashboard' },
+  { key: 'users', icon: Users, href: 'users', roles: ['admin', 'moderator'] },
+  { key: 'profile', icon: User, href: 'profile' },
+  { key: 'settings', icon: Settings, href: 'settings' },
 ];
 
 export function DashboardSidebar({ lang, dict }: DashboardSidebarProps) {
   const pathname = usePathname();
   const { isSidebarOpen } = useUIStore();
+  const { hasRole } = usePermissions();
 
   return (
     <aside
@@ -43,7 +54,11 @@ export function DashboardSidebar({ lang, dict }: DashboardSidebarProps) {
 
       {/* Navigation */}
       <nav aria-label="Main navigation" className="flex-1 space-y-1 p-3">
-        {navItems.map(({ key, icon: Icon, href }) => {
+        {navItems.map(({ key, icon: Icon, href, roles }) => {
+          if (roles && !hasRole(roles)) {
+            return null;
+          }
+
           const fullPath = `/${lang}/${href}`;
           const isActive = pathname === fullPath || pathname.startsWith(`${fullPath}/`);
 

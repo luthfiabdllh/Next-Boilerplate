@@ -1,4 +1,4 @@
-import { type NextRequest, NextResponse } from 'next/server';
+import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 
 const BACKEND_API_URL = process.env.BACKEND_API_URL ?? 'http://localhost:8000';
@@ -13,7 +13,7 @@ const ACCESS_TOKEN_TTL = Number(process.env.ACCESS_TOKEN_TTL ?? 900);
  * Called by the Axios interceptor in `api-client.ts` when a 401 is received.
  * Note: The race condition guard (shared refreshPromise) lives in api-client.ts.
  */
-export async function POST(_request: NextRequest) {
+export async function POST() {
   const cookieStore = await cookies();
   const refreshToken = cookieStore.get('refresh_token')?.value;
 

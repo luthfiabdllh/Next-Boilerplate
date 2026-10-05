@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
@@ -101,7 +102,15 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
 
       {/* Password */}
       <div className="space-y-2">
-        <Label htmlFor="login-password">{dict.passwordLabel}</Label>
+        <div className="flex items-center justify-between">
+          <Label htmlFor="login-password">{dict.passwordLabel}</Label>
+          <Link
+            href={`/${lang}/forgot-password`}
+            className="text-xs text-primary hover:underline"
+          >
+            {dict.forgotPassword}
+          </Link>
+        </div>
         <div className="relative">
           <Lock
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
