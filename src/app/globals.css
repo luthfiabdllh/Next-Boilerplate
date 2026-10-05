@@ -110,6 +110,70 @@
 }
 
 /* =========================================================
+   TweakCN Color Theme Presets
+   ========================================================= */
+
+/* Amethyst Haze */
+[data-theme="amethyst-haze"] {
+  --primary: 262.1 83.3% 57.8%;
+  --primary-foreground: 210 40% 98%;
+  --ring: 262.1 83.3% 57.8%;
+}
+.dark[data-theme="amethyst-haze"] {
+  --primary: 263.4 70% 50.4%;
+  --primary-foreground: 210 40% 98%;
+  --ring: 263.4 70% 50.4%;
+}
+
+/* Ocean Breeze */
+[data-theme="ocean-breeze"] {
+  --primary: 221.2 83.2% 53.3%;
+  --primary-foreground: 210 40% 98%;
+  --ring: 221.2 83.2% 53.3%;
+}
+.dark[data-theme="ocean-breeze"] {
+  --primary: 217.2 91.2% 59.8%;
+  --primary-foreground: 222.2 47.4% 11.2%;
+  --ring: 224.3 76.3% 48%;
+}
+
+/* Emerald Forest */
+[data-theme="emerald-forest"] {
+  --primary: 142.1 76.2% 36.3%;
+  --primary-foreground: 355.7 100% 97.3%;
+  --ring: 142.1 76.2% 36.3%;
+}
+.dark[data-theme="emerald-forest"] {
+  --primary: 142.1 70.6% 45.3%;
+  --primary-foreground: 144.9 80.4% 10%;
+  --ring: 142.4 71.8% 29.2%;
+}
+
+/* Sunset Rose */
+[data-theme="sunset-rose"] {
+  --primary: 346.8 77.2% 49.8%;
+  --primary-foreground: 355.7 100% 97.3%;
+  --ring: 346.8 77.2% 49.8%;
+}
+.dark[data-theme="sunset-rose"] {
+  --primary: 346.8 77.2% 49.8%;
+  --primary-foreground: 355.7 100% 97.3%;
+  --ring: 346.8 77.2% 49.8%;
+}
+
+/* Catppuccin Pastel */
+[data-theme="catppuccin"] {
+  --primary: 267 83% 60%;
+  --primary-foreground: 0 0% 100%;
+  --ring: 267 83% 60%;
+}
+.dark[data-theme="catppuccin"] {
+  --primary: 267 83% 76%;
+  --primary-foreground: 240 21% 15%;
+  --ring: 267 83% 76%;
+}
+
+/* =========================================================
    Base styles — using CSS variables directly (not @apply)
    Tailwind v4: @apply in @layer base with unknown utilities
    causes build errors, use raw CSS instead.

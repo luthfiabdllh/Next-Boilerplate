@@ -29,6 +29,7 @@ A production-ready, enterprise-grade Next.js 16 starter template with a complete
 | **Framework** | Next.js 16 (App Router, Turbopack) |
 | **Language** | TypeScript 5 (strict mode) |
 | **Styling** | Tailwind CSS v4 (CSS-first) + shadcn/ui (Nova preset) |
+| **Theming** | `next-themes` (Light, Dark, System) + TweakCN Presets + Live Customizer |
 | **UI Components** | shadcn/ui + Radix UI + Lucide Icons |
 | **Server State** | TanStack Query v5 (+ RSC prefetching) |
 | **UI State** | Zustand v5 |
@@ -78,12 +79,13 @@ src/
 │           ├── route.ts                 # BFF: search, filter, paginate, create
 │           └── [id]/route.ts            # BFF: get, patch, delete user
 ├── components/
-│   ├── ui/                       # shadcn/ui primitives (dialog, table, select, etc.)
+│   ├── ui/                       # shadcn/ui primitives (dialog, sheet, table, select, etc.)
 │   ├── shared/                   # Reusable cross-feature utilities
 │   │   ├── confirm-dialog.tsx    # Generic destructive/action confirmation
-│   │   └── role-guard.tsx        # <Can> and <RoleGuard> authorization components
+│   │   ├── role-guard.tsx        # <Can> and <RoleGuard> authorization components
+│   │   └── theme-customizer.tsx  # TweakCN theme customizer & CSS exporter
 │   └── layouts/                  # App shell components
-│       ├── dashboard-header.tsx  # Header with Lang switcher, Theme toggle, User menu
+│       ├── dashboard-header.tsx  # Header with Lang switcher, Theme customizer, User menu
 │       └── dashboard-sidebar.tsx # Sidebar with RBAC-guarded links
 ├── features/
 │   ├── auth/                     # Auth feature domain
@@ -100,6 +102,7 @@ src/
 │   ├── get-query-client.ts       # Singleton QueryClient (React cache)
 │   ├── i18n.ts                   # Dictionary loader + locale helpers
 │   ├── rbac.ts                   # Role & Permission definitions + matrix
+│   ├── theme.ts                  # TweakCN presets registry & CSS generator
 │   ├── verify-session.ts         # jose JWT verification (server-only)
 │   ├── utils.ts                  # cn(), formatDate(), etc.
 │   └── dictionaries/
@@ -108,7 +111,8 @@ src/
 ├── hooks/
 │   └── use-permissions.ts        # Authorization hook for Client Components
 ├── providers/
-│   └── query-provider.tsx        # TanStack Query provider
+│   ├── query-provider.tsx        # TanStack Query provider
+│   └── theme-provider.tsx        # next-themes + TweakCN preset sync provider
 ├── store/
 │   └── ui.store.ts               # Zustand UI store (sidebar, theme)
 ├── proxy.ts                      # ⚠️ Next.js 16 proxy (NOT middleware.ts)

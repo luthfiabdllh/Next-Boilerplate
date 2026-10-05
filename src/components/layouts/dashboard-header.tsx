@@ -2,6 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useTheme } from 'next-themes';
 import { Menu, LogOut, Globe, Sun, Moon, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
@@ -15,6 +16,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { useUIStore } from '@/store/ui.store';
 import { useLogout } from '@/features/auth/api/use-mutations';
+import { ThemeCustomizer } from '@/components/shared/theme-customizer';
 
 interface DashboardHeaderProps {
   lang: string;
@@ -29,7 +31,8 @@ export function DashboardHeader({
 }: DashboardHeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
-  const { toggleSidebar, theme, setTheme } = useUIStore();
+  const { toggleSidebar } = useUIStore();
+  const { resolvedTheme, setTheme } = useTheme();
   const logoutMutation = useLogout();
 
   const initials = userName
@@ -48,13 +51,7 @@ export function DashboardHeader({
   };
 
   const toggleTheme = () => {
-    const nextTheme = theme === 'dark' ? 'light' : 'dark';
-    setTheme(nextTheme);
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
   };
 
   return (
@@ -108,12 +105,15 @@ export function DashboardHeader({
           aria-label="Toggle color theme"
           title="Toggle color theme"
         >
-          {theme === 'dark' ? (
+          {resolvedTheme === 'dark' ? (
             <Sun size={18} aria-hidden="true" />
           ) : (
             <Moon size={18} aria-hidden="true" />
           )}
         </Button>
+
+        {/* Theme Customizer Drawer Trigger */}
+        <ThemeCustomizer triggerVariant="icon" />
 
         {/* Quick Logout Button */}
         <Button

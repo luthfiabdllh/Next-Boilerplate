@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { Toaster } from '@/components/ui/sonner';
 import { QueryProvider } from '@/providers/query-provider';
+import { ThemeProvider } from '@/providers/theme-provider';
 import { getDictionary, isValidLocale, type Locale } from '@/lib/i18n';
 import { notFound } from 'next/navigation';
 
@@ -43,9 +44,11 @@ export default async function LangLayout({ children, params }: LangLayoutProps) 
   await getDictionary(lang as Locale);
 
   return (
-    <QueryProvider>
-      {children}
-      <Toaster richColors position="top-right" />
-    </QueryProvider>
+    <ThemeProvider>
+      <QueryProvider>
+        {children}
+        <Toaster richColors position="top-right" />
+      </QueryProvider>
+    </ThemeProvider>
   );
 }
