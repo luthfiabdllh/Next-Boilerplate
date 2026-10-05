@@ -5,8 +5,7 @@ import { getDictionary, type Locale } from '@/lib/i18n';
 import { getQueryClient } from '@/lib/get-query-client';
 import { authKeys } from '@/features/auth/api/query-keys';
 import { getCurrentUserServer } from '@/features/auth/api/server-fetch';
-import { DashboardHeader } from '@/components/layouts/dashboard-header';
-import { DashboardSidebar } from '@/components/layouts/dashboard-sidebar';
+import { AppShell } from '@/components/layouts/app-shell';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -38,6 +37,8 @@ export default async function DashboardLayout({
   }
 
   const userName = typeof session?.name === 'string' ? session.name : 'User';
+  const userEmail = typeof session?.email === 'string' ? session.email : undefined;
+  const userRole = typeof session?.role === 'string' ? session.role : undefined;
 
   // Prefetch the current user data across all dashboard routes
   await queryClient.prefetchQuery({
@@ -47,23 +48,15 @@ export default async function DashboardLayout({
 
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
-      <div className="flex h-screen overflow-hidden">
-        <DashboardSidebar lang={lang} dict={dict.dashboard.navigation} />
-        <div className="flex flex-1 flex-col overflow-hidden">
-          <DashboardHeader
-            lang={lang}
-            userName={userName}
-            logoutLabel={dict.auth.logout.button}
-          />
-          <main
-            id="main-content"
-            className="flex-1 overflow-y-auto p-6"
-            aria-label="Dashboard main content"
-          >
-            {children}
-          </main>
-        </div>
-      </div>
+      <AppShell
+        lang={lang}
+        userName={userName}
+        userEmail={userEmail}
+        userRole={userRole}
+        dict={dict}
+      >
+        {children}
+      </AppShell>
     </HydrationBoundary>
   );
 }

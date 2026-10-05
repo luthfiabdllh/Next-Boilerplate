@@ -84,9 +84,15 @@ src/
 │   │   ├── confirm-dialog.tsx    # Generic destructive/action confirmation
 │   │   ├── role-guard.tsx        # <Can> and <RoleGuard> authorization components
 │   │   └── theme-customizer.tsx  # TweakCN theme customizer & CSS exporter
-│   └── layouts/                  # App shell components
-│       ├── dashboard-header.tsx  # Header with Lang switcher, Theme customizer, User menu
-│       └── dashboard-sidebar.tsx # Sidebar with RBAC-guarded links
+│   └── layouts/                  # App shell components (@efferd/dashboard-4)
+│       ├── app-shell.tsx         # Root layout shell with SidebarProvider & SidebarInset
+│       ├── app-sidebar.tsx       # Floating collapsible sidebar with RBAC nav groups
+│       ├── app-header.tsx        # Top header with trigger, breadcrumbs, search, theme & user menu
+│       ├── nav-group.tsx         # Collapsible grouped navigation with role checks
+│       ├── nav-user.tsx          # User profile dropdown with role badge & logout
+│       ├── app-breadcrumbs.tsx   # Dynamic pathname-aware breadcrumbs
+│       ├── custom-sidebar-trigger.tsx # Sidebar toggle with tooltip & ⌘B shortcut
+│       └── latest-change.tsx     # Dismissible update / changelog card in sidebar footer
 ├── features/
 │   ├── auth/                     # Auth feature domain
 │   │   ├── api/                  # Query keys, mutations, queries
