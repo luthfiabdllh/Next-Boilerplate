@@ -79,20 +79,29 @@ src/
 │           ├── route.ts                 # BFF: search, filter, paginate, create
 │           └── [id]/route.ts            # BFF: get, patch, delete user
 ├── components/
-│   ├── ui/                       # shadcn/ui primitives (dialog, sheet, table, select, etc.)
+│   ├── ui/                       # shadcn/ui primitives (dialog, sheet, table, select, chart, item, etc.)
 │   ├── shared/                   # Reusable cross-feature utilities
 │   │   ├── confirm-dialog.tsx    # Generic destructive/action confirmation
+│   │   ├── delta.tsx             # Numeric delta trend indicator (+/- with badges)
 │   │   ├── role-guard.tsx        # <Can> and <RoleGuard> authorization components
 │   │   └── theme-customizer.tsx  # TweakCN theme customizer & CSS exporter
-│   └── layouts/                  # App shell components (@efferd/dashboard-4)
-│       ├── app-shell.tsx         # Root layout shell with SidebarProvider & SidebarInset
-│       ├── app-sidebar.tsx       # Floating collapsible sidebar with RBAC nav groups
-│       ├── app-header.tsx        # Top header with trigger, breadcrumbs, search, theme & user menu
-│       ├── nav-group.tsx         # Collapsible grouped navigation with role checks
-│       ├── nav-user.tsx          # User profile dropdown with role badge & logout
-│       ├── app-breadcrumbs.tsx   # Dynamic pathname-aware breadcrumbs
-│       ├── custom-sidebar-trigger.tsx # Sidebar toggle with tooltip & ⌘B shortcut
-│       └── latest-change.tsx     # Dismissible update / changelog card in sidebar footer
+│   ├── layouts/                  # App shell components (@efferd/dashboard-4)
+│   │   ├── app-shell.tsx         # Root layout shell with SidebarProvider & SidebarInset
+│   │   ├── app-sidebar.tsx       # Floating collapsible sidebar with left-anchored icons & RBAC nav
+│   │   ├── app-header.tsx        # Top header with trigger, breadcrumbs, notifications & user profile
+│   │   ├── nav-group.tsx         # Collapsible grouped navigation (dropdown on collapsed icon mode)
+│   │   ├── nav-user.tsx          # User profile dropdown with role badge & logout
+│   │   ├── app-breadcrumbs.tsx   # Dynamic pathname-aware breadcrumbs
+│   │   ├── custom-sidebar-trigger.tsx # Sidebar toggle with tooltip & ⌘B shortcut
+│   │   └── latest-change.tsx     # Dismissible update / changelog card with accordion transition
+│   └── dashboard/                # Analytics & Dashboard widgets (@efferd/dashboard-4)
+│       ├── dashboard.tsx         # Master responsive dashboard grid layout
+│       ├── stats.tsx             # KPI metric cards (Total revenue, Orders, AOV, Conversion)
+│       ├── revenue-chart.tsx     # Interactive area chart with gradient fill & timeframe filter
+│       ├── revenue-chart-data.ts # Demo revenue data generator
+│       ├── refund-return-rate-chart.tsx # Daily refund rate line chart
+│       ├── category-rank-chart.tsx      # Monochromatic category share donut chart
+│       └── quick-actions.tsx     # Shortcuts list card with action items
 ├── features/
 │   ├── auth/                     # Auth feature domain
 │   │   ├── api/                  # Query keys, mutations, queries
@@ -105,6 +114,7 @@ src/
 ├── lib/
 │   ├── api-client.ts             # Axios instance + refresh interceptor
 │   ├── api-response.ts           # Standard API response & error formatters
+│   ├── formater.ts               # Number, currency, and chart date formatters
 │   ├── get-query-client.ts       # Singleton QueryClient (React cache)
 │   ├── i18n.ts                   # Dictionary loader + locale helpers
 │   ├── rbac.ts                   # Role & Permission definitions + matrix

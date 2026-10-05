@@ -70,6 +70,20 @@ return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBo
 - This project uses **Tailwind v4 CSS-first** syntax.
 - Do NOT use `@apply` with semantic utility classes (like `border-border`) inside `@layer base` — it causes build errors. Use raw CSS variables instead.
 - CSS custom properties are mapped to Tailwind tokens via `@theme inline` in `src/app/globals.css`.
+- **CSS variable syntax in utilities**: Always use parentheses for arbitrary variables like `w-(--sidebar-width)` or `w-[var(--sidebar-width)]`. Do NOT write `w-[--sidebar-width]` because Tailwind v4 compiles it into invalid CSS `width: --sidebar-width;` which browsers discard.
+
+## Sidebar & App Shell Architecture
+
+- The sidebar uses `collapsible="icon"` with left-anchored geometry. Buttons and icons must stay left-aligned (`justify-start px-2`) so icons do not jump horizontally during expand/shrink animations.
+- Easing for sidebar transitions should use `duration-300 ease-in-out` across container width, padding, and text opacity/max-width.
+- Grouped nav items with children in `nav-group.tsx` render an accordion `<Collapsible>` in expanded mode, and switch to a floating `<DropdownMenu>` when collapsed to icon mode.
+- Update/changelog widgets in the sidebar footer (`latest-change.tsx`) must animate `max-h` and `opacity` to fold neatly during icon mode.
+
+## Dashboard & Analytics
+
+- Widgets live in `src/components/dashboard/` and are composed inside `dashboard.tsx`.
+- Analytics charts (Recharts) follow a monochromatic palette (`#ffffff`, `#d4d4d8`, `#71717a`, `#3f3f46`, `#27272a`) on dark cards.
+- Formatters for currency, percentages, and dates live in `src/lib/formater.ts` with unit tests.
 
 ## Cookies / Auth
 
@@ -84,3 +98,4 @@ return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBo
 - Do not place Playwright spec files inside `src/` — Vitest will try to run them and fail.
 - Server-only code (proxy.ts, verify-session.ts, Route Handlers, api-client.ts) is excluded from Vitest coverage — these are covered by Playwright.
 <!-- END:project-conventions -->
+
