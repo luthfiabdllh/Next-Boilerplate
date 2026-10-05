@@ -11,14 +11,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
-import type { Dictionary } from '@/lib/dictionaries/en';
 
 interface ProfileFormProps {
   user: User;
-  dict: Dictionary['profile'];
 }
 
-export function ProfileForm({ user, dict }: ProfileFormProps) {
+export function ProfileForm({ user }: ProfileFormProps) {
   const updateProfileMutation = useUpdateProfile();
 
   const {
@@ -36,7 +34,7 @@ export function ProfileForm({ user, dict }: ProfileFormProps) {
   const onSubmit = async (data: UpdateProfileDTO) => {
     try {
       await updateProfileMutation.mutateAsync(data);
-      toast.success(dict.profileUpdated);
+      toast.success('Profile updated successfully');
     } catch {
       // Handled in mutation onError
     }
@@ -48,7 +46,7 @@ export function ProfileForm({ user, dict }: ProfileFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Role Display */}
       <div className="space-y-1.5">
-        <Label>{dict.roleLabel}</Label>
+        <Label>Role</Label>
         <div>
           <Badge variant="secondary" className="capitalize">
             {user.role}
@@ -58,7 +56,7 @@ export function ProfileForm({ user, dict }: ProfileFormProps) {
 
       {/* Name Field */}
       <div className="space-y-1.5">
-        <Label htmlFor="profile-name">{dict.nameLabel}</Label>
+        <Label htmlFor="profile-name">Full Name</Label>
         <Input
           id="profile-name"
           type="text"
@@ -76,7 +74,7 @@ export function ProfileForm({ user, dict }: ProfileFormProps) {
 
       {/* Email Field */}
       <div className="space-y-1.5">
-        <Label htmlFor="profile-email">{dict.emailLabel}</Label>
+        <Label htmlFor="profile-email">Email Address</Label>
         <Input
           id="profile-email"
           type="email"
@@ -100,10 +98,10 @@ export function ProfileForm({ user, dict }: ProfileFormProps) {
         {isPending ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-            {dict.saving}
+            Saving...
           </>
         ) : (
-          dict.saveChanges
+          'Save Changes'
         )}
       </Button>
     </form>

@@ -1,34 +1,18 @@
 import type { Metadata } from 'next';
-import { getDictionary, type Locale } from '@/lib/i18n';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ThemeCustomizerContent } from '@/components/shared/theme-customizer';
 
-interface SettingsPageProps {
-  params: Promise<{ lang: string }>;
-}
+export const metadata: Metadata = {
+  title: 'Settings',
+  description: 'System preferences and application configuration',
+};
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-  return {
-    title: dict.dashboard.navigation.settings,
-    description: 'System preferences and application configuration',
-  };
-}
-
-export default async function SettingsPage({ params }: SettingsPageProps) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-
+export default function SettingsPage() {
   return (
     <div className="space-y-6 max-w-4xl">
       <div>
         <h1 className="text-3xl font-bold tracking-tight">
-          {dict.dashboard.navigation.settings}
+          Settings
         </h1>
         <p className="text-muted-foreground mt-1">
           Configure application preferences, theme appearance, and project defaults.

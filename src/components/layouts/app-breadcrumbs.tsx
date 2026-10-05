@@ -21,15 +21,9 @@ export type AppBreadcrumbPage = {
 
 interface AppBreadcrumbsProps {
   page?: AppBreadcrumbPage | null;
-  dict?: {
-    dashboard?: string;
-    users?: string;
-    profile?: string;
-    settings?: string;
-  };
 }
 
-export function AppBreadcrumbs({ page, dict }: AppBreadcrumbsProps) {
+export function AppBreadcrumbs({ page }: AppBreadcrumbsProps) {
   const pathname = usePathname();
 
   // If a specific page override was passed, render it
@@ -48,43 +42,42 @@ export function AppBreadcrumbs({ page, dict }: AppBreadcrumbsProps) {
     );
   }
 
-  // Derive breadcrumb from pathname segments: /[lang]/[segment]/[subsegment]
+  // Derive breadcrumb from pathname segments: /[segment]/[subsegment]
   const segments = pathname.split("/").filter(Boolean);
-  const lang = segments[0] || "en";
-  const section = segments[1] || "dashboard";
-  const subSection = segments[2];
+  const section = segments[0] || "dashboard";
+  const subSection = segments[1];
 
   const getSectionMeta = (sec: string) => {
     switch (sec) {
       case "dashboard":
         return {
-          title: dict?.dashboard || "Dashboard",
+          title: "Dashboard",
           icon: <LayoutDashboard className="size-3.5 text-muted-foreground" />,
-          href: `/${lang}/dashboard`,
+          href: "/dashboard",
         };
       case "users":
         return {
-          title: dict?.users || "Users",
+          title: "Users",
           icon: <Users className="size-3.5 text-muted-foreground" />,
-          href: `/${lang}/users`,
+          href: "/users",
         };
       case "profile":
         return {
-          title: dict?.profile || "Profile",
+          title: "Profile",
           icon: <User className="size-3.5 text-muted-foreground" />,
-          href: `/${lang}/profile`,
+          href: "/profile",
         };
       case "settings":
         return {
-          title: dict?.settings || "Settings",
+          title: "Settings",
           icon: <Settings className="size-3.5 text-muted-foreground" />,
-          href: `/${lang}/settings`,
+          href: "/settings",
         };
       default:
         return {
           title: sec.charAt(0).toUpperCase() + sec.slice(1),
           icon: <Sparkles className="size-3.5 text-muted-foreground" />,
-          href: `/${lang}/${sec}`,
+          href: `/${sec}`,
         };
     }
   };
@@ -99,13 +92,11 @@ export function AppBreadcrumbs({ page, dict }: AppBreadcrumbsProps) {
             <BreadcrumbItem>
               <BreadcrumbLink asChild>
                 <Link
-                  href={`/${lang}/dashboard`}
+                  href="/dashboard"
                   className="flex items-center gap-1.5 text-muted-foreground hover:text-foreground text-xs"
                 >
                   <LayoutDashboard className="size-3.5" />
-                  <span className="hidden sm:inline">
-                    {dict?.dashboard || "Dashboard"}
-                  </span>
+                  <span className="hidden sm:inline">Dashboard</span>
                 </Link>
               </BreadcrumbLink>
             </BreadcrumbItem>

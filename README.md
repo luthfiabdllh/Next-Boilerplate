@@ -1,6 +1,6 @@
 # Enterprise Next.js Template
 
-A production-ready, enterprise-grade Next.js 16 starter template with a complete **authentication domain**, **i18n** (English + Indonesian), **TanStack Query**, **Zustand**, **shadcn/ui**, **Vitest**, **Playwright**, and **GitHub Actions CI/CD** — ready to clone and ship.
+A production-ready, enterprise-grade Next.js 16 starter template with a complete **authentication domain**, **TanStack Query**, **Zustand**, **shadcn/ui**, **Vitest**, **Playwright**, and **GitHub Actions CI/CD** — ready to clone and ship.
 
 ---
 
@@ -14,7 +14,6 @@ A production-ready, enterprise-grade Next.js 16 starter template with a complete
   - [Two-Layer Auth Security](#two-layer-auth-security)
   - [BFF Route Handlers](#bff-route-handlers)
   - [Server State vs. UI State](#server-state-vs-ui-state)
-  - [i18n (Internationalization)](#i18n-internationalization)
 - [Adding a New Feature Domain](#adding-a-new-feature-domain)
 - [Testing](#testing)
 - [CI/CD Pipeline](#cicd-pipeline)
@@ -49,23 +48,20 @@ A production-ready, enterprise-grade Next.js 16 starter template with a complete
 ```
 src/
 ├── app/                          # Next.js App Router
-│   ├── layout.tsx                # Root layout (HTML shell only)
-│   ├── page.tsx                  # Root page → redirects to /en
+│   ├── layout.tsx                # Root layout with ThemeProvider, QueryProvider, Toaster
+│   ├── page.tsx                  # Root page → redirects to /dashboard
 │   ├── globals.css               # Tailwind v4 + shadcn CSS variables
-│   ├── [lang]/                   # Locale segment (en | id)
-│   │   ├── layout.tsx            # Lang layout: providers + Toaster
-│   │   ├── page.tsx              # → redirects to /[lang]/dashboard
-│   │   ├── error.tsx             # Error boundary (client)
-│   │   ├── (auth)/
-│   │   │   ├── login/page.tsx           # Login page
-│   │   │   ├── register/page.tsx        # Registration page
-│   │   │   └── forgot-password/page.tsx # Password reset request
-│   │   └── (dashboard)/
-│   │       ├── layout.tsx        # ⚠️ Authoritative JWT check + Shell
-│   │       ├── dashboard/page.tsx# Dashboard metrics
-│   │       ├── users/page.tsx    # Data Table CRUD & RBAC showcase
-│   │       ├── profile/page.tsx  # User Profile & Password settings
-│   │       └── settings/page.tsx # Settings blueprint
+│   ├── error.tsx                 # Global error boundary (client)
+│   ├── (auth)/
+│   │   ├── login/page.tsx           # Login page
+│   │   ├── register/page.tsx        # Registration page
+│   │   └── forgot-password/page.tsx # Password reset request
+│   ├── (dashboard)/
+│   │   ├── layout.tsx        # ⚠️ Authoritative JWT check + Shell
+│   │   ├── dashboard/page.tsx# Dashboard metrics
+│   │   ├── users/page.tsx    # Data Table CRUD & RBAC showcase
+│   │   ├── profile/page.tsx  # User Profile & Password settings
+│   │   └── settings/page.tsx # Settings blueprint
 │   └── api/
 │       ├── auth/
 │       │   ├── login/route.ts           # BFF: validates + sets cookie
@@ -116,14 +112,10 @@ src/
 │   ├── api-response.ts           # Standard API response & error formatters
 │   ├── formater.ts               # Number, currency, and chart date formatters
 │   ├── get-query-client.ts       # Singleton QueryClient (React cache)
-│   ├── i18n.ts                   # Dictionary loader + locale helpers
 │   ├── rbac.ts                   # Role & Permission definitions + matrix
 │   ├── theme.ts                  # TweakCN presets registry & CSS generator
 │   ├── verify-session.ts         # jose JWT verification (server-only)
-│   ├── utils.ts                  # cn(), formatDate(), etc.
-│   └── dictionaries/
-│       ├── en.ts                 # English translations
-│       └── id.ts                 # Indonesian translations
+│   └── utils.ts                  # cn(), formatDate(), etc.
 ├── hooks/
 │   └── use-permissions.ts        # Authorization hook for Client Components
 ├── providers/
@@ -178,7 +170,7 @@ ALLOWED_ORIGINS=http://localhost:3000
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) — it redirects to `/en/dashboard`, then to `/en/login` if unauthenticated.
+Open [http://localhost:3000](http://localhost:3000) — it redirects to `/dashboard`, then to `/login` if unauthenticated.
 
 ---
 
@@ -212,12 +204,12 @@ Request → [Layer 1: proxy.ts] → [Layer 2: dashboard layout]
 - Checks cookie *existence* only (is `access_token` cookie set?)
 - Performs CSRF origin validation on mutating requests
 - Does **NOT** verify JWT signatures (prevents logout loops)
-- Redirects to `/[lang]/login` if cookie is missing
+- Redirects to `/login` if cookie is missing
 
-**Layer 2 — `src/app/[lang]/(dashboard)/layout.tsx` (Authoritative Check)**
+**Layer 2 — `src/app/(dashboard)/layout.tsx` (Authoritative Check)**
 - Calls `verifySession()` which uses `jose` to verify: signature + algorithm + expiry
 - Even if Layer 1 is bypassed, this layer catches invalid tokens
-- Redirects to `/[lang]/login` if token is invalid or expired
+- Redirects to `/login` if token is invalid or expired
 
 > ⚠️ **Never** do JWT verification in `proxy.ts`. Keep it thin. Put authoritative checks in Server Component layouts.
 
@@ -260,29 +252,6 @@ return (
   </HydrationBoundary>
 );
 ```
-
-### i18n (Internationalization)
-
-All UI text is available in **English (`en`)** and **Indonesian (`id`)**.
-
-Locale is determined by the URL segment: `/en/...` or `/id/...`.
-
-**Adding a new locale:**
-
-1. Add the locale to `src/lib/i18n.ts`:
-   ```ts
-   export const locales: Locale[] = ['en', 'id', 'fr']; // add 'fr'
-   ```
-
-2. Create the dictionary file `src/lib/dictionaries/fr.ts` typed against `Dictionary`:
-   ```ts
-   import type { Dictionary } from './en';
-   export const fr: Dictionary = { /* ... */ };
-   ```
-
-3. Register it in `getDictionary()` in `src/lib/i18n.ts`.
-
-4. Add to `generateStaticParams()` in `src/app/[lang]/layout.tsx`.
 
 ---
 
@@ -334,7 +303,7 @@ Tests are in `src/**/__tests__/` directories. Coverage report is generated in `c
 **Coverage scope** (files measured):
 - `src/features/**/types/`
 - `src/features/**/api/query-keys.ts`
-- `src/lib/utils.ts`, `src/lib/i18n.ts`, `src/lib/dictionaries/`
+- `src/lib/utils.ts`, `src/lib/rbac.ts`, `src/lib/theme.ts`, `src/lib/api-response.ts`, `src/lib/formater.ts`
 
 > App Router files, components, and browser-only code are excluded — they're covered by Playwright.
 
@@ -352,9 +321,9 @@ npm run test:e2e:ui
 ```
 
 E2E tests cover:
-- Login form validation (both locales)
+- Login form validation
 - Protected route redirects
-- i18n routing (valid/invalid locales)
+- Root route navigation
 - Logout button accessibility
 
 ---

@@ -33,21 +33,17 @@ import {
 import { NavGroup } from "@/components/layouts/nav-group";
 import { LatestChange } from "@/components/layouts/latest-change";
 import type { SidebarNavGroup } from "@/components/layouts/nav-config";
-import type { Dictionary } from "@/lib/dictionaries/en";
 
 interface AppSidebarProps {
-  lang: string;
-  dict?: Dictionary["dashboard"]["navigation"];
   userName?: string;
   userRole?: string;
 }
 
-export function AppSidebar({ lang }: AppSidebarProps) {
+export function AppSidebar({}: AppSidebarProps = {}) {
   const pathname = usePathname();
 
   const isRouteActive = (route: string) => {
-    const fullPath = `/${lang}/${route}`;
-    return pathname === fullPath;
+    return pathname === `/${route}` || (route === "dashboard" && pathname === "/");
   };
 
   const navGroups: SidebarNavGroup[] = [
@@ -56,13 +52,13 @@ export function AppSidebar({ lang }: AppSidebarProps) {
       items: [
         {
           title: "Dashboard",
-          path: `/${lang}/dashboard`,
+          path: "/dashboard",
           icon: <LayoutGrid className="size-4 shrink-0" />,
           isActive: isRouteActive("dashboard"),
         },
         {
           title: "Sales",
-          path: `/${lang}/dashboard`,
+          path: "/dashboard",
           icon: <BarChart3 className="size-4 shrink-0" />,
         },
       ],
@@ -72,33 +68,33 @@ export function AppSidebar({ lang }: AppSidebarProps) {
       items: [
         {
           title: "Orders",
-          path: `/${lang}/dashboard`,
+          path: "/dashboard",
           icon: <ShoppingCart className="size-4 shrink-0" />,
           subItems: [
-            { title: "All orders", path: `/${lang}/dashboard` },
-            { title: "Unfulfilled", path: `/${lang}/dashboard` },
-            { title: "Returns", path: `/${lang}/dashboard` },
+            { title: "All orders", path: "/dashboard" },
+            { title: "Unfulfilled", path: "/dashboard" },
+            { title: "Returns", path: "/dashboard" },
           ],
         },
         {
           title: "Products",
-          path: `/${lang}/dashboard`,
+          path: "/dashboard",
           icon: <FileText className="size-4 shrink-0" />,
           subItems: [
-            { title: "Catalog", path: `/${lang}/dashboard` },
-            { title: "Inventory", path: `/${lang}/dashboard` },
-            { title: "Collections", path: `/${lang}/dashboard` },
+            { title: "Catalog", path: "/dashboard" },
+            { title: "Inventory", path: "/dashboard" },
+            { title: "Collections", path: "/dashboard" },
           ],
         },
         {
           title: "Customers",
-          path: `/${lang}/users`,
+          path: "/users",
           icon: <Users className="size-4 shrink-0" />,
           isActive: isRouteActive("users"),
         },
         {
           title: "Marketing",
-          path: `/${lang}/dashboard`,
+          path: "/dashboard",
           icon: <Megaphone className="size-4 shrink-0" />,
         },
       ],
@@ -108,13 +104,13 @@ export function AppSidebar({ lang }: AppSidebarProps) {
       items: [
         {
           title: "Store settings",
-          path: `/${lang}/settings`,
+          path: "/settings",
           icon: <Settings className="size-4 shrink-0" />,
           isActive: isRouteActive("settings") || isRouteActive("profile"),
           subItems: [
-            { title: "Store profile", path: `/${lang}/profile` },
-            { title: "Shipping & delivery", path: `/${lang}/settings` },
-            { title: "Payments", path: `/${lang}/settings` },
+            { title: "Store profile", path: "/profile" },
+            { title: "Shipping & delivery", path: "/settings" },
+            { title: "Payments", path: "/settings" },
           ],
         },
       ],
@@ -131,7 +127,7 @@ export function AppSidebar({ lang }: AppSidebarProps) {
           className="hover:bg-transparent justify-start p-0 transition-all duration-300 ease-in-out"
         >
           <Link
-            href={`/${lang}/dashboard`}
+            href="/dashboard"
             className="flex items-center justify-start gap-2.5 group-data-[collapsible=icon]:gap-0 transition-all duration-300 ease-in-out"
           >
             <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-foreground text-background transition-transform duration-300 ease-in-out hover:scale-105">
@@ -160,7 +156,7 @@ export function AppSidebar({ lang }: AppSidebarProps) {
                   className="flex-1 justify-start gap-2 bg-foreground text-background hover:bg-foreground/90 font-medium text-xs h-8 rounded-md group-data-[collapsible=icon]:size-8 group-data-[collapsible=icon]:w-8 group-data-[collapsible=icon]:min-w-8 group-data-[collapsible=icon]:p-2 group-data-[collapsible=icon]:flex-none transition-all duration-300 ease-in-out overflow-hidden"
                   asChild
                 >
-                  <Link href={`/${lang}/dashboard`} className="flex items-center justify-start gap-2">
+                  <Link href="/dashboard" className="flex items-center justify-start gap-2">
                     <Plus className="size-4 shrink-0 transition-transform duration-300 ease-in-out" />
                     <span className="transition-all duration-300 ease-in-out overflow-hidden whitespace-nowrap group-data-[collapsible=icon]:max-w-0 group-data-[collapsible=icon]:opacity-0 max-w-28 opacity-100">
                       Add product
@@ -205,7 +201,7 @@ export function AppSidebar({ lang }: AppSidebarProps) {
               size="sm"
             >
               <Link
-                href={`/${lang}/settings`}
+                href="/settings"
                 className="flex items-center justify-start gap-2 group-data-[collapsible=icon]:gap-0 transition-all duration-300 ease-in-out"
               >
                 <HelpCircle className="size-4 shrink-0 transition-transform duration-300 ease-in-out" />

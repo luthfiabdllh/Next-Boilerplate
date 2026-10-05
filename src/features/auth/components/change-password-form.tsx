@@ -10,13 +10,8 @@ import { useChangePassword } from '../api/use-mutations';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import type { Dictionary } from '@/lib/dictionaries/en';
 
-interface ChangePasswordFormProps {
-  dict: Dictionary['profile'];
-}
-
-export function ChangePasswordForm({ dict }: ChangePasswordFormProps) {
+export function ChangePasswordForm() {
   const changePasswordMutation = useChangePassword();
 
   const {
@@ -36,7 +31,7 @@ export function ChangePasswordForm({ dict }: ChangePasswordFormProps) {
   const onSubmit = async (data: ChangePasswordDTO) => {
     try {
       await changePasswordMutation.mutateAsync(data);
-      toast.success(dict.passwordUpdated);
+      toast.success('Password updated successfully');
       reset();
     } catch {
       // Handled in mutation onError
@@ -49,7 +44,7 @@ export function ChangePasswordForm({ dict }: ChangePasswordFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
       {/* Current Password */}
       <div className="space-y-1.5">
-        <Label htmlFor="current-password">{dict.currentPasswordLabel}</Label>
+        <Label htmlFor="current-password">Current Password</Label>
         <Input
           id="current-password"
           type="password"
@@ -68,7 +63,7 @@ export function ChangePasswordForm({ dict }: ChangePasswordFormProps) {
 
       {/* New Password */}
       <div className="space-y-1.5">
-        <Label htmlFor="new-password">{dict.newPasswordLabel}</Label>
+        <Label htmlFor="new-password">New Password</Label>
         <Input
           id="new-password"
           type="password"
@@ -87,7 +82,7 @@ export function ChangePasswordForm({ dict }: ChangePasswordFormProps) {
 
       {/* Confirm New Password */}
       <div className="space-y-1.5">
-        <Label htmlFor="confirm-new-password">{dict.confirmPasswordLabel}</Label>
+        <Label htmlFor="confirm-new-password">Confirm New Password</Label>
         <Input
           id="confirm-new-password"
           type="password"
@@ -108,10 +103,10 @@ export function ChangePasswordForm({ dict }: ChangePasswordFormProps) {
         {isPending ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-            {dict.updatingPassword}
+            Updating password...
           </>
         ) : (
-          dict.updatePassword
+          'Update Password'
         )}
       </Button>
     </form>

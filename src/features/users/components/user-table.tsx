@@ -44,13 +44,8 @@ import { UserFormDialog } from './user-form-dialog';
 import { useUsers } from '../api/use-queries';
 import { useDeleteUser } from '../api/use-mutations';
 import type { UserEntity, UserFilterDTO } from '../types';
-import type { Dictionary } from '@/lib/dictionaries/en';
 
-interface UserTableProps {
-  dict: Dictionary['users'];
-}
-
-export function UserTable({ dict }: UserTableProps) {
+export function UserTable() {
   const [filters, setFilters] = React.useState<Partial<UserFilterDTO>>({
     page: 1,
     limit: 5,
@@ -112,7 +107,7 @@ export function UserTable({ dict }: UserTableProps) {
     if (!userToDelete) return;
     try {
       await deleteMutation.mutateAsync(userToDelete.id);
-      toast.success(dict.toasts.deleted);
+      toast.success('User deleted successfully');
       setUserToDelete(null);
     } catch {
       // Handled in mutation
@@ -124,6 +119,21 @@ export function UserTable({ dict }: UserTableProps) {
   const startItem = meta.total === 0 ? 0 : (meta.page - 1) * meta.limit + 1;
   const endItem = Math.min(meta.page * meta.limit, meta.total);
 
+  const formatRole = (role: string) => {
+    switch (role) {
+      case 'admin':
+        return 'Admin';
+      case 'moderator':
+        return 'Moderator';
+      default:
+        return 'User';
+    }
+  };
+
+  const formatStatus = (status: string) => {
+    return status === 'active' ? 'Active' : 'Inactive';
+  };
+
   return (
     <div className="space-y-4">
       {/* Table Toolbar */}
@@ -133,7 +143,7 @@ export function UserTable({ dict }: UserTableProps) {
           <div className="relative min-w-48 sm:w-72">
             <Search className="text-muted-foreground absolute top-1/2 left-2.5 h-4 w-4 -translate-y-1/2" />
             <Input
-              placeholder={dict.searchPlaceholder}
+              placeholder="Search users..."
               value={filters.search ?? ''}
               onChange={handleSearchChange}
               className="pl-8"
@@ -147,13 +157,13 @@ export function UserTable({ dict }: UserTableProps) {
               onValueChange={handleRoleChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder={dict.filterRole} />
+                <SelectValue placeholder="Filter by role" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{dict.allRoles}</SelectItem>
-                <SelectItem value="admin">{dict.roles.admin}</SelectItem>
-                <SelectItem value="moderator">{dict.roles.moderator}</SelectItem>
-                <SelectItem value="user">{dict.roles.user}</SelectItem>
+                <SelectItem value="all">All roles</SelectItem>
+                <SelectItem value="admin">Admin</SelectItem>
+                <SelectItem value="moderator">Moderator</SelectItem>
+                <SelectItem value="user">User</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -165,12 +175,12 @@ export function UserTable({ dict }: UserTableProps) {
               onValueChange={handleStatusChange}
             >
               <SelectTrigger>
-                <SelectValue placeholder={dict.filterStatus} />
+                <SelectValue placeholder="Filter by status" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{dict.allStatuses}</SelectItem>
-                <SelectItem value="active">{dict.statuses.active}</SelectItem>
-                <SelectItem value="inactive">{dict.statuses.inactive}</SelectItem>
+                <SelectItem value="all">All statuses</SelectItem>
+                <SelectItem value="active">Active</SelectItem>
+                <SelectItem value="inactive">Inactive</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -180,7 +190,7 @@ export function UserTable({ dict }: UserTableProps) {
         <Can permission="users:create">
           <Button onClick={handleCreate} className="gap-1.5 shrink-0">
             <Plus size={16} />
-            <span>{dict.addNewUser}</span>
+            <span>Add User</span>
           </Button>
         </Can>
       </div>
@@ -190,15 +200,15 @@ export function UserTable({ dict }: UserTableProps) {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>{dict.columns.name}</TableHead>
-              <TableHead>{dict.columns.email}</TableHead>
-              <TableHead>{dict.columns.role}</TableHead>
-              <TableHead>{dict.columns.status}</TableHead>
+              <TableHead>Name</TableHead>
+              <TableHead>Email</TableHead>
+              <TableHead>Role</TableHead>
+              <TableHead>Status</TableHead>
               <TableHead className="hidden md:table-cell">
-                {dict.columns.createdAt}
+                Created
               </TableHead>
               <TableHead className="w-16 text-right">
-                {dict.columns.actions}
+                Actions
               </TableHead>
             </TableRow>
           </TableHeader>
@@ -258,7 +268,7 @@ export function UserTable({ dict }: UserTableProps) {
                       {user.role === 'admin' && (
                         <ShieldCheck className="mr-1 h-3 w-3" />
                       )}
-                      {dict.roles[user.role]}
+                      {formatRole(user.role)}
                     </Badge>
                   </TableCell>
                   <TableCell>
@@ -270,7 +280,7 @@ export function UserTable({ dict }: UserTableProps) {
                           : 'border-muted text-muted-foreground'
                       }
                     >
-                      {dict.statuses[user.status]}
+                      {formatStatus(user.status)}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground hidden text-xs md:table-cell">
@@ -294,7 +304,7 @@ export function UserTable({ dict }: UserTableProps) {
                             className="cursor-pointer"
                           >
                             <Pencil className="mr-2 h-4 w-4" />
-                            <span>{dict.dialog.submitEdit}</span>
+                            <span>Edit</span>
                           </DropdownMenuItem>
                         </Can>
                         <Can permission="users:delete">
@@ -303,7 +313,7 @@ export function UserTable({ dict }: UserTableProps) {
                             className="text-destructive cursor-pointer"
                           >
                             <Trash2 className="mr-2 h-4 w-4" />
-                            <span>{dict.dialog.deleteConfirm}</span>
+                            <span>Delete</span>
                           </DropdownMenuItem>
                         </Can>
                       </DropdownMenuContent>
@@ -318,18 +328,18 @@ export function UserTable({ dict }: UserTableProps) {
         {/* Pagination Toolbar */}
         <div className="flex flex-col gap-3 border-t p-3 sm:flex-row sm:items-center sm:justify-between text-xs text-muted-foreground">
           <div className="flex items-center gap-2">
-            <span>{dict.pagination.showing}</span>
+            <span>Showing</span>
             <span className="font-medium text-foreground">
               {startItem}-{endItem}
             </span>
-            <span>{dict.pagination.of}</span>
+            <span>of</span>
             <span className="font-medium text-foreground">{meta.total}</span>
           </div>
 
           <div className="flex items-center gap-4">
             {/* Page Size Selector */}
             <div className="flex items-center gap-1.5">
-              <span>{dict.pagination.perPage}:</span>
+              <span>Per page:</span>
               <div className="w-16">
                 <Select
                   value={String(filters.limit ?? 5)}
@@ -359,12 +369,12 @@ export function UserTable({ dict }: UserTableProps) {
                   }))
                 }
                 disabled={meta.page <= 1 || isLoading}
-                aria-label={dict.pagination.prev}
+                aria-label="Previous page"
               >
                 <ChevronLeft size={14} />
               </Button>
               <span className="px-2">
-                {dict.pagination.page} {meta.page} {dict.pagination.of} {meta.totalPages}
+                Page {meta.page} of {meta.totalPages}
               </span>
               <Button
                 variant="outline"
@@ -376,7 +386,7 @@ export function UserTable({ dict }: UserTableProps) {
                   }))
                 }
                 disabled={meta.page >= meta.totalPages || isLoading}
-                aria-label={dict.pagination.next}
+                aria-label="Next page"
               >
                 <ChevronRight size={14} />
               </Button>
@@ -390,16 +400,15 @@ export function UserTable({ dict }: UserTableProps) {
         open={formOpen}
         onOpenChange={setFormOpen}
         user={selectedUser}
-        dict={dict}
       />
 
       {/* Confirm Dialog for Deletion */}
       <ConfirmDialog
         open={deleteConfirmOpen}
         onOpenChange={setDeleteConfirmOpen}
-        title={dict.dialog.deleteTitle}
-        description={dict.dialog.deleteDescription}
-        confirmLabel={dict.dialog.deleteConfirm}
+        title="Delete user"
+        description="Are you sure you want to delete this user? This action cannot be undone."
+        confirmLabel="Delete"
         variant="destructive"
         isLoading={deleteMutation.isPending}
         onConfirm={confirmDelete}

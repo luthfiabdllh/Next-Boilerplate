@@ -36,14 +36,11 @@ export function proxy(req: NextRequest) {
   // ─── Route Protection (Thin Check Only) ────────────────────────────────────
   // Only check for cookie EXISTENCE here — not validity.
   // Actual JWT verification happens in the dashboard layout Server Component.
-  // const isProtectedRoute = pathname.match(/^\/[a-z]{2}\/dashboard(\/.*)?$/);
-
+  // const isProtectedRoute = pathname.match(/^\/dashboard(\/.*)?$/);
   // if (isProtectedRoute) {
   //   const token = req.cookies.get('access_token')?.value;
   //   if (!token) {
-  //     // Extract lang segment for proper redirect
-  //     const lang = pathname.split('/')[1] ?? 'en';
-  //     return NextResponse.redirect(new URL(`/${lang}/login`, req.url));
+  //     return NextResponse.redirect(new URL('/login', req.url));
   //   }
   // }
 

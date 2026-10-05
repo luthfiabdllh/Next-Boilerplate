@@ -5,23 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { CustomSidebarTrigger } from "@/components/layouts/custom-sidebar-trigger";
 import { NavUser } from "@/components/layouts/nav-user";
-import type { Dictionary } from "@/lib/dictionaries/en";
 
 interface AppHeaderProps {
-  lang: string;
   userName?: string;
   userEmail?: string;
   userRole?: string;
-  logoutLabel?: string;
-  dict?: Dictionary;
 }
 
 export function AppHeader({
-  lang,
   userName = "User",
   userEmail,
   userRole,
-  logoutLabel = "Sign out",
 }: AppHeaderProps) {
   return (
     <header
@@ -54,11 +48,9 @@ export function AppHeader({
         </Button>
 
         <NavUser
-          lang={lang}
           userName={userName}
           userEmail={userEmail}
           userRole={userRole}
-          logoutLabel={logoutLabel}
         />
       </div>
     </header>

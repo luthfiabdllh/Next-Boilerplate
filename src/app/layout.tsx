@@ -1,5 +1,8 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from '@/components/ui/sonner';
+import { QueryProvider } from '@/providers/query-provider';
+import { ThemeProvider } from '@/providers/theme-provider';
 import './globals.css';
 
 const geistSans = Geist({
@@ -24,11 +27,6 @@ export const metadata: Metadata = {
   ),
 };
 
-/**
- * Root Layout — HTML shell only.
- * No business logic, providers, or auth here.
- * All that lives in [lang]/layout.tsx.
- */
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -39,7 +37,12 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>
+          <QueryProvider>
+            {children}
+            <Toaster richColors position="top-right" />
+          </QueryProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

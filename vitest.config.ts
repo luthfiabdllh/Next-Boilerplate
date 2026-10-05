@@ -39,7 +39,7 @@ export default defineConfig({
         '**/node_modules/**',
       ],
       thresholds: {
-        // Applies to: types/, utils, query-keys, dictionaries, i18n
+        // Applies to: types/, utils, query-keys, rbac, formatters
         lines: 80,
         functions: 80,
         branches: 80,

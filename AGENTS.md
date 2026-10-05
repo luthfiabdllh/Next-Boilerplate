@@ -21,7 +21,7 @@ This is an enterprise Next.js 16 template. The following decisions are **final a
 ## Two-Layer Auth Pattern
 
 1. **Layer 1 — `src/proxy.ts`**: Cookie existence check only. No `jose`, no JWT decode.
-2. **Layer 2 — `src/app/[lang]/(dashboard)/layout.tsx`**: Calls `verifySession()` for cryptographic JWT check.
+2. **Layer 2 — `src/app/(dashboard)/layout.tsx`**: Calls `verifySession()` for cryptographic JWT check.
 
 Violating this separation causes logout loops or security gaps.
 
@@ -52,13 +52,6 @@ const queryClient = getQueryClient();
 await queryClient.prefetchQuery({ queryKey: ..., queryFn: ... });
 return <HydrationBoundary state={dehydrate(queryClient)}>{children}</HydrationBoundary>;
 ```
-
-## i18n
-
-- Supported locales: `en` and `id`. Defined in `src/lib/i18n.ts`.
-- All UI text must be in **both** dictionaries: `src/lib/dictionaries/en.ts` and `src/lib/dictionaries/id.ts`.
-- The `Dictionary` type is defined in `en.ts` — `id.ts` must satisfy it.
-- Never hardcode UI strings in components — always accept `dict` prop from the parent Server Component.
 
 ## Zod
 

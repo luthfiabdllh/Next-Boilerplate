@@ -21,7 +21,6 @@ import { useCurrentUser } from "@/features/auth/api/use-queries";
 import { useLogout } from "@/features/auth/api/use-mutations";
 
 interface NavUserProps {
-  lang: string;
   userName?: string;
   userEmail?: string;
   userRole?: string;
@@ -30,7 +29,6 @@ interface NavUserProps {
 }
 
 export function NavUser({
-  lang,
   userName = "User",
   userEmail,
   userRole,
@@ -104,7 +102,7 @@ export function NavUser({
         <DropdownMenuGroup>
           <DropdownMenuItem asChild>
             <Link
-              href={`/${lang}/profile`}
+              href="/profile"
               className="flex items-center gap-2.5 cursor-pointer py-1.5"
             >
               <UserIcon className="size-4 text-muted-foreground" />
@@ -113,7 +111,7 @@ export function NavUser({
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link
-              href={`/${lang}/settings`}
+              href="/settings"
               className="flex items-center gap-2.5 cursor-pointer py-1.5"
             >
               <Settings className="size-4 text-muted-foreground" />

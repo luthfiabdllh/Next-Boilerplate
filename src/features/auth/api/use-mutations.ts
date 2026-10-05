@@ -112,8 +112,7 @@ export const useLogout = () => {
       queryClient.removeQueries({ queryKey: authKeys.all });
       toast.success('You have been signed out.');
 
-      const lang = document.documentElement.lang ?? 'en';
-      window.location.href = `/${lang}/login`;
+      window.location.href = '/login';
     },
     onError: () => {
       toast.error('Failed to sign out. Please try again.');

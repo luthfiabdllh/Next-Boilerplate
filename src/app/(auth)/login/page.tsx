@@ -1,6 +1,5 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import { getDictionary, type Locale } from '@/lib/i18n';
 import { LoginForm } from '@/features/auth/components/login-form';
 import {
   Card,
@@ -10,27 +9,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-interface LoginPageProps {
-  params: Promise<{ lang: string }>;
-}
+export const metadata: Metadata = {
+  title: 'Sign In',
+  description: 'Sign in to access your dashboard.',
+};
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-  return {
-    title: dict.auth.login.title,
-    description: dict.auth.login.subtitle,
-  };
-}
-
-export default async function LoginPage({ params }: LoginPageProps) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-
+export default function LoginPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
@@ -40,10 +24,10 @@ export default async function LoginPage({ params }: LoginPageProps) {
             N
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {dict.auth.login.title}
+            Welcome back
           </h1>
           <p className="mt-2 text-muted-foreground">
-            {dict.auth.login.subtitle}
+            Enter your credentials to access your account
           </p>
         </div>
 
@@ -56,19 +40,19 @@ export default async function LoginPage({ params }: LoginPageProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <LoginForm lang={lang} dict={dict.auth.login} />
+            <LoginForm />
           </CardContent>
         </Card>
 
         {/* Footer */}
         <p className="text-center text-sm text-muted-foreground">
-          {dict.auth.login.noAccount}{' '}
+          Don&apos;t have an account?{' '}
           <Link
-            href={`/${lang}/register`}
+            href="/register"
             className="font-medium text-primary underline-offset-4 hover:underline"
             aria-label="Navigate to sign up page"
           >
-            {dict.auth.login.signUp}
+            Sign up
           </Link>
         </p>
       </div>

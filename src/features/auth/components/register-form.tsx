@@ -13,14 +13,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { formatApiError } from '@/lib/api-response';
-import type { Dictionary } from '@/lib/dictionaries/en';
 
-interface RegisterFormProps {
-  lang: string;
-  dict: Dictionary['auth']['register'];
-}
-
-export function RegisterForm({ lang, dict }: RegisterFormProps) {
+export function RegisterForm() {
   const router = useRouter();
   const registerMutation = useRegister();
 
@@ -41,10 +35,10 @@ export function RegisterForm({ lang, dict }: RegisterFormProps) {
   const onSubmit = async (data: RegisterDTO) => {
     try {
       await registerMutation.mutateAsync(data);
-      toast.success(dict.successToast);
-      router.push(`/${lang}/login`);
+      toast.success('Account created successfully! Please sign in.');
+      router.push('/login');
     } catch (err: unknown) {
-      toast.error(formatApiError(err, dict.errors.passwordMismatch));
+      toast.error(formatApiError(err, 'Failed to create account'));
     }
   };
 
@@ -60,12 +54,12 @@ export function RegisterForm({ lang, dict }: RegisterFormProps) {
     >
       {/* Name Field */}
       <div className="space-y-1.5">
-        <Label htmlFor="register-name">{dict.nameLabel}</Label>
+        <Label htmlFor="register-name">Full name</Label>
         <div className="relative">
           <Input
             id="register-name"
             type="text"
-            placeholder={dict.namePlaceholder}
+            placeholder="John Doe"
             autoComplete="name"
             disabled={isPending}
             aria-invalid={Boolean(errors.name)}
@@ -88,12 +82,12 @@ export function RegisterForm({ lang, dict }: RegisterFormProps) {
 
       {/* Email Field */}
       <div className="space-y-1.5">
-        <Label htmlFor="register-email">{dict.emailLabel}</Label>
+        <Label htmlFor="register-email">Email address</Label>
         <div className="relative">
           <Input
             id="register-email"
             type="email"
-            placeholder={dict.emailPlaceholder}
+            placeholder="you@example.com"
             autoComplete="email"
             disabled={isPending}
             aria-invalid={Boolean(errors.email)}
@@ -116,12 +110,12 @@ export function RegisterForm({ lang, dict }: RegisterFormProps) {
 
       {/* Password Field */}
       <div className="space-y-1.5">
-        <Label htmlFor="register-password">{dict.passwordLabel}</Label>
+        <Label htmlFor="register-password">Password</Label>
         <div className="relative">
           <Input
             id="register-password"
             type="password"
-            placeholder={dict.passwordPlaceholder}
+            placeholder="Create a strong password"
             autoComplete="new-password"
             disabled={isPending}
             aria-invalid={Boolean(errors.password)}
@@ -144,12 +138,12 @@ export function RegisterForm({ lang, dict }: RegisterFormProps) {
 
       {/* Confirm Password Field */}
       <div className="space-y-1.5">
-        <Label htmlFor="register-confirm-password">{dict.confirmPasswordLabel}</Label>
+        <Label htmlFor="register-confirm-password">Confirm password</Label>
         <div className="relative">
           <Input
             id="register-confirm-password"
             type="password"
-            placeholder={dict.confirmPasswordPlaceholder}
+            placeholder="Confirm your password"
             autoComplete="new-password"
             disabled={isPending}
             aria-invalid={Boolean(errors.confirmPassword)}
@@ -181,21 +175,21 @@ export function RegisterForm({ lang, dict }: RegisterFormProps) {
         {isPending ? (
           <>
             <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
-            {dict.submittingButton}
+            Creating account...
           </>
         ) : (
-          dict.submitButton
+          'Create account'
         )}
       </Button>
 
       {/* Login Link */}
       <div className="text-center text-sm">
-        <span className="text-muted-foreground">{dict.hasAccount} </span>
+        <span className="text-muted-foreground">Already have an account? </span>
         <Link
-          href={`/${lang}/login`}
+          href="/login"
           className="text-primary hover:underline font-medium"
         >
-          {dict.signIn}
+          Sign in
         </Link>
       </div>
     </form>

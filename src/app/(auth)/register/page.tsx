@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { getDictionary, type Locale } from '@/lib/i18n';
 import { RegisterForm } from '@/features/auth/components/register-form';
 import {
   Card,
@@ -9,27 +8,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-interface RegisterPageProps {
-  params: Promise<{ lang: string }>;
-}
+export const metadata: Metadata = {
+  title: 'Sign Up',
+  description: 'Create an account to get started.',
+};
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-  return {
-    title: dict.auth.register.title,
-    description: dict.auth.register.subtitle,
-  };
-}
-
-export default async function RegisterPage({ params }: RegisterPageProps) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-
+export default function RegisterPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
@@ -39,10 +23,10 @@ export default async function RegisterPage({ params }: RegisterPageProps) {
             N
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {dict.auth.register.title}
+            Create an account
           </h1>
           <p className="mt-2 text-muted-foreground">
-            {dict.auth.register.subtitle}
+            Get started with your account today
           </p>
         </div>
 
@@ -55,7 +39,7 @@ export default async function RegisterPage({ params }: RegisterPageProps) {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <RegisterForm lang={lang} dict={dict.auth.register} />
+            <RegisterForm />
           </CardContent>
         </Card>
       </div>

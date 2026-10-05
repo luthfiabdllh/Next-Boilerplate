@@ -1,5 +1,4 @@
 import type { Metadata } from 'next';
-import { getDictionary, type Locale } from '@/lib/i18n';
 import { ForgotPasswordForm } from '@/features/auth/components/forgot-password-form';
 import {
   Card,
@@ -9,27 +8,12 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 
-interface ForgotPasswordPageProps {
-  params: Promise<{ lang: string }>;
-}
+export const metadata: Metadata = {
+  title: 'Forgot Password',
+  description: 'Request a password reset link.',
+};
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ lang: string }>;
-}): Promise<Metadata> {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-  return {
-    title: dict.auth.forgotPassword.title,
-    description: dict.auth.forgotPassword.subtitle,
-  };
-}
-
-export default async function ForgotPasswordPage({ params }: ForgotPasswordPageProps) {
-  const { lang } = await params;
-  const dict = await getDictionary(lang as Locale);
-
+export default function ForgotPasswordPage() {
   return (
     <main className="flex min-h-screen items-center justify-center bg-background p-4">
       <div className="w-full max-w-md space-y-6">
@@ -38,10 +22,10 @@ export default async function ForgotPasswordPage({ params }: ForgotPasswordPageP
             N
           </div>
           <h1 className="text-3xl font-bold tracking-tight">
-            {dict.auth.forgotPassword.title}
+            Forgot password?
           </h1>
           <p className="mt-2 text-muted-foreground">
-            {dict.auth.forgotPassword.subtitle}
+            Enter your email to receive a password reset link
           </p>
         </div>
 
@@ -53,7 +37,7 @@ export default async function ForgotPasswordPage({ params }: ForgotPasswordPageP
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <ForgotPasswordForm lang={lang} dict={dict.auth.forgotPassword} />
+            <ForgotPasswordForm />
           </CardContent>
         </Card>
       </div>

@@ -26,20 +26,17 @@ import {
 } from '@/components/ui/select';
 import { createUserSchema, type CreateUserDTO, type UserEntity } from '../types';
 import { useCreateUser, useUpdateUser } from '../api/use-mutations';
-import type { Dictionary } from '@/lib/dictionaries/en';
 
 interface UserFormDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   user?: UserEntity | null;
-  dict: Dictionary['users'];
 }
 
 export function UserFormDialog({
   open,
   onOpenChange,
   user,
-  dict,
 }: UserFormDialogProps) {
   const isEditing = Boolean(user);
   const createUserMutation = useCreateUser();
@@ -85,10 +82,10 @@ export function UserFormDialog({
     try {
       if (isEditing && user) {
         await updateUserMutation.mutateAsync({ ...data, id: user.id });
-        toast.success(dict.toasts.updated);
+        toast.success('User updated successfully');
       } else {
         await createUserMutation.mutateAsync(data);
-        toast.success(dict.toasts.created);
+        toast.success('User created successfully');
       }
       onOpenChange(false);
     } catch {
@@ -103,19 +100,22 @@ export function UserFormDialog({
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>
-            {isEditing ? dict.dialog.editTitle : dict.dialog.createTitle}
+            {isEditing ? 'Edit User' : 'Create User'}
           </DialogTitle>
           <DialogDescription>
-            {isEditing ? dict.dialog.editDescription : dict.dialog.createDescription}
+            {isEditing
+              ? 'Update user account information and roles.'
+              : 'Fill in the details to create a new user account.'}
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           {/* Name Field */}
           <div className="space-y-1.5">
-            <Label htmlFor="user-name">{dict.dialog.nameLabel}</Label>
+            <Label htmlFor="user-name">Full Name</Label>
             <Input
               id="user-name"
+              placeholder="Enter full name"
               disabled={isPending}
               aria-invalid={Boolean(errors.name)}
               aria-describedby={errors.name ? 'user-name-error' : undefined}
@@ -130,10 +130,11 @@ export function UserFormDialog({
 
           {/* Email Field */}
           <div className="space-y-1.5">
-            <Label htmlFor="user-email">{dict.dialog.emailLabel}</Label>
+            <Label htmlFor="user-email">Email Address</Label>
             <Input
               id="user-email"
               type="email"
+              placeholder="Enter email address"
               disabled={isPending}
               aria-invalid={Boolean(errors.email)}
               aria-describedby={errors.email ? 'user-email-error' : undefined}
@@ -148,7 +149,7 @@ export function UserFormDialog({
 
           {/* Role Field */}
           <div className="space-y-1.5">
-            <Label htmlFor="user-role">{dict.dialog.roleLabel}</Label>
+            <Label htmlFor="user-role">Role</Label>
             <Controller
               control={control}
               name="role"
@@ -162,9 +163,9 @@ export function UserFormDialog({
                     <SelectValue placeholder="Select role" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="admin">{dict.roles.admin}</SelectItem>
-                    <SelectItem value="moderator">{dict.roles.moderator}</SelectItem>
-                    <SelectItem value="user">{dict.roles.user}</SelectItem>
+                    <SelectItem value="admin">Admin</SelectItem>
+                    <SelectItem value="moderator">Moderator</SelectItem>
+                    <SelectItem value="user">User</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -173,7 +174,7 @@ export function UserFormDialog({
 
           {/* Status Field */}
           <div className="space-y-1.5">
-            <Label htmlFor="user-status">{dict.dialog.statusLabel}</Label>
+            <Label htmlFor="user-status">Status</Label>
             <Controller
               control={control}
               name="status"
@@ -187,8 +188,8 @@ export function UserFormDialog({
                     <SelectValue placeholder="Select status" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="active">{dict.statuses.active}</SelectItem>
-                    <SelectItem value="inactive">{dict.statuses.inactive}</SelectItem>
+                    <SelectItem value="active">Active</SelectItem>
+                    <SelectItem value="inactive">Inactive</SelectItem>
                   </SelectContent>
                 </Select>
               )}
@@ -206,7 +207,7 @@ export function UserFormDialog({
             </Button>
             <Button type="submit" disabled={isPending}>
               {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              {isEditing ? dict.dialog.submitEdit : dict.dialog.submitCreate}
+              {isEditing ? 'Save Changes' : 'Create User'}
             </Button>
           </DialogFooter>
         </form>

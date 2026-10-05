@@ -13,18 +13,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
-import type { Dictionary } from '@/lib/dictionaries/en';
-
-interface LoginFormProps {
-  lang: string;
-  dict: Dictionary['auth']['login'];
-}
 
 /**
  * Login form — uses react-hook-form + Zod v4 + TanStack Query mutation.
- * All aria-labels are present for accessibility compliance (PRD requirement).
+ * All aria-labels are present for accessibility compliance.
  */
-export function LoginForm({ lang, dict }: LoginFormProps) {
+export function LoginForm() {
   const router = useRouter();
   const loginMutation = useLogin();
 
@@ -46,14 +40,14 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
 
       if (result.success) {
         toast.success('Signed in successfully!');
-        router.push(`/${lang}/dashboard`);
+        router.push('/dashboard');
         router.refresh();
       } else {
-        toast.error(result.error?.message ?? dict.errors.invalidCredentials);
+        toast.error(result.error?.message ?? 'Invalid email or password');
       }
     } catch (err: unknown) {
       const message =
-        err instanceof Error ? err.message : dict.errors.serverError;
+        err instanceof Error ? err.message : 'Something went wrong. Please try again.';
       toast.error(message);
     }
   };
@@ -69,7 +63,7 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
     >
       {/* Email */}
       <div className="space-y-2">
-        <Label htmlFor="login-email">{dict.emailLabel}</Label>
+        <Label htmlFor="login-email">Email address</Label>
         <div className="relative">
           <Mail
             className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -79,7 +73,7 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
           <Input
             id="login-email"
             type="email"
-            placeholder={dict.emailPlaceholder}
+            placeholder="you@example.com"
             autoComplete="email"
             autoFocus
             aria-required="true"
@@ -103,12 +97,12 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
       {/* Password */}
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="login-password">{dict.passwordLabel}</Label>
+          <Label htmlFor="login-password">Password</Label>
           <Link
-            href={`/${lang}/forgot-password`}
+            href="/forgot-password"
             className="text-xs text-primary hover:underline"
           >
-            {dict.forgotPassword}
+            Forgot password?
           </Link>
         </div>
         <div className="relative">
@@ -120,7 +114,7 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
           <Input
             id="login-password"
             type="password"
-            placeholder={dict.passwordPlaceholder}
+            placeholder="••••••••"
             autoComplete="current-password"
             aria-required="true"
             aria-invalid={!!errors.password}
@@ -148,12 +142,12 @@ export function LoginForm({ lang, dict }: LoginFormProps) {
         type="submit"
         className="w-full"
         disabled={isPending}
-        aria-label={isPending ? dict.submittingButton : dict.submitButton}
+        aria-label={isPending ? 'Signing in...' : 'Sign in'}
       >
         {isPending && (
           <Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden="true" />
         )}
-        {isPending ? dict.submittingButton : dict.submitButton}
+        {isPending ? 'Signing in...' : 'Sign in'}
       </Button>
     </form>
   );
