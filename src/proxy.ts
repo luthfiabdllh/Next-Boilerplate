@@ -19,7 +19,7 @@ const ALLOWED_ORIGINS = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000')
   .map((o) => o.trim());
 
 export function proxy(req: NextRequest) {
-  const { pathname } = req.nextUrl;
+  // const { pathname } = req.nextUrl;
 
   // ─── CSRF Protection ───────────────────────────────────────────────────────
   // Validate Origin/Referer for all state-mutating requests.
@@ -36,16 +36,16 @@ export function proxy(req: NextRequest) {
   // ─── Route Protection (Thin Check Only) ────────────────────────────────────
   // Only check for cookie EXISTENCE here — not validity.
   // Actual JWT verification happens in the dashboard layout Server Component.
-  const isProtectedRoute = pathname.match(/^\/[a-z]{2}\/dashboard(\/.*)?$/);
+  // const isProtectedRoute = pathname.match(/^\/[a-z]{2}\/dashboard(\/.*)?$/);
 
-  if (isProtectedRoute) {
-    const token = req.cookies.get('access_token')?.value;
-    if (!token) {
-      // Extract lang segment for proper redirect
-      const lang = pathname.split('/')[1] ?? 'en';
-      return NextResponse.redirect(new URL(`/${lang}/login`, req.url));
-    }
-  }
+  // if (isProtectedRoute) {
+  //   const token = req.cookies.get('access_token')?.value;
+  //   if (!token) {
+  //     // Extract lang segment for proper redirect
+  //     const lang = pathname.split('/')[1] ?? 'en';
+  //     return NextResponse.redirect(new URL(`/${lang}/login`, req.url));
+  //   }
+  // }
 
   return NextResponse.next();
 }

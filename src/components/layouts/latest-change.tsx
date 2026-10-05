@@ -33,7 +33,7 @@ export function LatestChange({
       className={cn(
         "rounded-lg group/latest-change size-full min-h-24 justify-center border border-sidebar-border bg-sidebar-accent/50 text-sidebar-foreground",
         "relative flex size-full flex-col gap-1 overflow-hidden p-3 *:text-nowrap",
-        "transition-opacity group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0",
+        "transition-all duration-300 ease-in-out group-data-[collapsible=icon]:pointer-events-none group-data-[collapsible=icon]:opacity-0 group-data-[collapsible=icon]:max-h-0 group-data-[collapsible=icon]:min-h-0 group-data-[collapsible=icon]:p-0 group-data-[collapsible=icon]:m-0 group-data-[collapsible=icon]:border-0 group-data-[collapsible=icon]:scale-95",
         className
       )}
     >

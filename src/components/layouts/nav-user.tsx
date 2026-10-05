@@ -51,6 +51,10 @@ export function NavUser({
     .toUpperCase()
     .slice(0, 2);
 
+  const avatarSrc =
+    userAvatar ||
+    "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=96&h=96&fit=crop&crop=face";
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -60,7 +64,7 @@ export function NavUser({
           aria-label={`User menu for ${name}`}
         >
           <Avatar className="size-8 cursor-pointer border border-border">
-            {userAvatar && <AvatarImage src={userAvatar} alt={name} />}
+            <AvatarImage src={avatarSrc} alt={name} />
             <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">
               {initials}
             </AvatarFallback>
@@ -71,7 +75,7 @@ export function NavUser({
         <DropdownMenuLabel className="p-2 font-normal">
           <div className="flex items-center gap-3">
             <Avatar className="size-10 border border-border">
-              {userAvatar && <AvatarImage src={userAvatar} alt={name} />}
+              <AvatarImage src={avatarSrc} alt={name} />
               <AvatarFallback className="bg-primary text-primary-foreground text-sm font-semibold">
                 {initials}
               </AvatarFallback>

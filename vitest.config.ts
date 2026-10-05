@@ -19,6 +19,7 @@ export default defineConfig({
         'src/components/ui/**',
         'src/components/layouts/**',
         'src/components/shared/**',
+        'src/components/dashboard/**',
         'src/hooks/**',
         'src/proxy.ts',
         'src/env.ts',

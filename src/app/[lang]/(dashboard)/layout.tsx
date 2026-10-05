@@ -1,4 +1,4 @@
-import { redirect } from 'next/navigation';
+// import { redirect } from 'next/navigation';
 import { HydrationBoundary, dehydrate } from '@tanstack/react-query';
 import { verifySession } from '@/lib/verify-session';
 import { getDictionary, type Locale } from '@/lib/i18n';
@@ -32,9 +32,9 @@ export default async function DashboardLayout({
     Promise.resolve(getQueryClient()),
   ]);
 
-  if (!session) {
-    redirect(`/${lang}/login`);
-  }
+  // if (!session) {
+  //   redirect(`/${lang}/login`);
+  // }
 
   const userName = typeof session?.name === 'string' ? session.name : 'User';
   const userEmail = typeof session?.email === 'string' ? session.email : undefined;
